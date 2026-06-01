@@ -28,9 +28,11 @@ pytest -q
 
 <font style="color:rgb(26, 28, 31);">Frontend:</font>
 
-`<font style="color:rgb(193, 132, 1);background-color:rgba(26, 28, 31, 0.08);">cd</font><font style="background-color:rgba(26, 28, 31, 0.08);"> frontend</font><font style="background-color:rgba(26, 28, 31, 0.08);">  
-</font><font style="background-color:rgba(26, 28, 31, 0.08);">pnpm install</font><font style="background-color:rgba(26, 28, 31, 0.08);">  
-</font><font style="background-color:rgba(26, 28, 31, 0.08);">pnpm dev</font>`
+```bash
+cd frontend
+pnpm install
+pnpm dev
+```
 
 ## <font style="color:rgb(26, 28, 31);">Pull request guidelines</font>
 <font style="color:rgb(26, 28, 31);">Before opening a pull request, please:</font>
