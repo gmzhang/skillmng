@@ -26,7 +26,7 @@ alembic upgrade head
 pytest -q
 ```
 
-<font style="color:rgb(26, 28, 31);">Frontend:</font>
+Frontend:
 
 ```bash
 cd frontend
@@ -34,33 +34,33 @@ pnpm install
 pnpm dev
 ```
 
-## <font style="color:rgb(26, 28, 31);">Pull request guidelines</font>
-<font style="color:rgb(26, 28, 31);">Before opening a pull request, please:</font>
+## Pull request guidelines
+Before opening a pull request, please:
 
-1. <font style="color:rgb(26, 28, 31);">Keep the change focused.</font>
-2. <font style="color:rgb(26, 28, 31);">Add or update tests when behavior changes.</font>
-3. <font style="color:rgb(26, 28, 31);">Do not commit real tokens, API keys, SSH keys, cookies, or private data.</font>
-4. <font style="color:rgb(26, 28, 31);">Run backend tests when touching backend code.</font>
-5. <font style="color:rgb(26, 28, 31);">Run frontend type checks/build when touching frontend code.</font>
-6. <font style="color:rgb(26, 28, 31);">Explain the motivation and behavior change clearly in the PR description.</font>
+1. Keep the change focused.
+2. Add or update tests when behavior changes.
+3. Do not commit real tokens, API keys, SSH keys, cookies, or private data.
+4. Run backend tests when touching backend code.
+5. Run frontend type checks/build when touching frontend code.
+6. Explain the motivation and behavior change clearly in the PR description.
 
-## <font style="color:rgb(26, 28, 31);">Security and safety expectations</font>
-<font style="color:rgb(26, 28, 31);">Contributions must preserve these project invariants:</font>
+## Security and safety expectations
+Contributions must preserve these project invariants:
 
-+ <font style="color:rgb(26, 28, 31);">Tenant isolation: user identity must come from trusted server-side context or configured cookies, not request body fields.</font>
-+ <font style="color:rgb(26, 28, 31);">Path safety: reject absolute paths,</font><font style="color:rgb(26, 28, 31);"> </font><font style="color:rgb(26, 28, 31);">..</font><font style="color:rgb(26, 28, 31);">, control characters, unsafe zip entries, and oversized files.</font>
-+ <font style="color:rgb(26, 28, 31);">Secret hygiene: never log or commit secrets.</font>
-+ <font style="color:rgb(26, 28, 31);">Git safety: do not rewrite published history for restore workflows.</font>
-+ <font style="color:rgb(26, 28, 31);">LLM safety: keep provider configuration explicit, avoid logging full prompts/responses with sensitive data, and support mock/test modes.</font>
++ Tenant isolation: user identity must come from trusted server-side context or configured cookies, not request body fields.
++ Path safety: reject absolute paths,.., control characters, unsafe zip entries, and oversized files.
++ Secret hygiene: never log or commit secrets.
++ Git safety: do not rewrite published history for restore workflows.
++ LLM safety: keep provider configuration explicit, avoid logging full prompts/responses with sensitive data, and support mock/test modes.
 
-## <font style="color:rgb(26, 28, 31);">Code style</font>
-<font style="color:rgb(26, 28, 31);">Prefer small, readable changes that follow the existing project structure:</font>
+## Code style
+Prefer small, readable changes that follow the existing project structure:
 
-+ <font style="color:rgb(26, 28, 31);">Backend HTTP handlers should stay thin.</font>
-+ <font style="color:rgb(26, 28, 31);">Business logic belongs in service modules.</font>
-+ <font style="color:rgb(26, 28, 31);">Frontend API calls belong in</font><font style="color:rgb(26, 28, 31);"> </font><font style="color:rgb(26, 28, 31);">frontend/src/api</font><font style="color:rgb(26, 28, 31);">.</font>
-+ <font style="color:rgb(26, 28, 31);">Shared frontend UI belongs in</font><font style="color:rgb(26, 28, 31);"> </font><font style="color:rgb(26, 28, 31);">frontend/src/components</font><font style="color:rgb(26, 28, 31);">.</font>
-+ <font style="color:rgb(26, 28, 31);">Tests should cover security-sensitive behavior whenever possible.</font>
++ Backend HTTP handlers should stay thin.
++ Business logic belongs in service modules.
++ Frontend API calls belong in frontend/src/api.
++ Shared frontend UI belongs in frontend/src/components.
++ Tests should cover security-sensitive behavior whenever possible.
 
-## <font style="color:rgb(26, 28, 31);">License</font>
-<font style="color:rgb(26, 28, 31);">By contributing, you agree that your contributions will be licensed under the MIT License.</font>
+## License
+By contributing, you agree that your contributions will be licensed under the MIT License.
