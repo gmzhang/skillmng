@@ -1,5 +1,9 @@
 # Skill 管理系统
 
+skillmng is an open-source management platform for Agent Skills. It helps maintainers create, validate, version, review, and publish reusable Skills with Git-backed history, secure import/export, audit logs, and LLM-assisted editing workflows.
+
+The project is especially designed for Codex-style and agentic development workflows where Skills need to be maintained as structured, reviewable, testable software artifacts.
+
 面向 Agent 的 Skill 创建、版本管理、LLM 辅助优化与 Git 托管平台。
 完整需求见 [`feature/prd1.md`](./feature/prd1.md);Skill 文件规范见 [`doc/guifan.md`](./doc/guifan.md)。
 
@@ -8,7 +12,6 @@
 - **后端**:Python 3.11+ / FastAPI / SQLAlchemy 2.x / Alembic / sqlite / GitPython
 - **前端**:React 18 / TypeScript / Vite / Ant Design 5 / Tailwind / TanStack Query / Monaco Editor
 - **持久化**:`./data/skillmng.sqlite3` (后续可平滑迁 PostgreSQL)
-- **Git 托管**:`https://code.myxiaojin.cn/groups/xiaojin-skills` 下每个 Skill 一个独立仓库
 
 ## 本地启动
 
@@ -17,14 +20,6 @@
 ```bash
 cp .env.example .env
 # 按需修改 .env;敏感字段(token/密钥)切勿提交回仓库
-```
-
-代理(出网必需,跳过会导致 Git/LLM 无法访问):
-
-```bash
-export https_proxy=http://127.0.0.1:1235
-export http_proxy=http://127.0.0.1:1235
-export all_proxy=socks5://127.0.0.1:1234
 ```
 
 ### 2. 启动后端
@@ -106,7 +101,7 @@ make stop    # 停止容器
 **OSS 同步注意事项**:
 - 同步 `skillmng.sqlite3` 时必须同时同步 `skillmng.sqlite3-wal` 和 `skillmng.sqlite3-shm`（如果存在），否则数据不完整。
 - 建议在容器停止状态下同步，或使用 `sqlite3 skillmng.sqlite3 "VACUUM INTO '/tmp/backup.sqlite3'"` 生成一致性快照再同步。
-- `git/skill-repos/` 是各 Skill 的完整 Git 仓库，已推送到 AntCode 的数据可从远端恢复，未推送的仅存在于此目录。
+- `git/skill-repos/` 是各 Skill 的完整 Git 仓库，已推送到 GIT 的数据可从远端恢复，未推送的仅存在于此目录。
 
 ## 目录结构
 
