@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.tsbuildinfo
+__pycache__/
+*.py[cod]
+**/data/skillmng.sqlite3*
+**/data/git/
+.env
+.env.local
+!.env.example
