@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   Button,
@@ -59,6 +59,14 @@ export default function SkillList() {
   const [pendingQ, setPendingQ] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
+
+  // 输入防抖:400ms 无新输入后自动触发搜索
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (pendingQ !== q) setQ(pendingQ);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [pendingQ, q]);
   const qc = useQueryClient();
   const { message, modal } = AntdApp.useApp();
 

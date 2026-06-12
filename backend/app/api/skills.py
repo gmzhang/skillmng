@@ -5,6 +5,7 @@ from fastapi import APIRouter, Request
 from sqlalchemy import func, select
 
 from app.api.deps import CurrentUserDep, DBDep, get_client_ip
+from app.core.config import get_settings
 from app.core.errors import ValidationError
 from app.models.skill import Skill
 from app.models.skill_file import SkillFile
@@ -16,7 +17,7 @@ from app.schemas.skill import (
     SkillOut,
     SkillUpdate,
 )
-from app.services import audit_service, skill_service
+from app.services import antcode_client, antcode_skill_service, audit_service, git_service, skill_service
 
 router = APIRouter()
 
@@ -157,10 +158,7 @@ def create_repository(
     """
     skill = skill_service.get_skill(db, user_id=user.user_id, skill_id=skill_id)
     if not skill.git_repo_name:
-        # 这里不实际调 Git 平台 API。M3 git_service.compute_repo_name 会复用同样规则。
-        from app.services.git_service import compute_repo_name
-
-        skill.git_repo_name = compute_repo_name(user.user_id, skill.name)
+        skill.git_repo_name = git_service.compute_repo_name(user.user_id, skill.name)
         db.commit()
         db.refresh(skill)
     audit_service.record(
@@ -210,10 +208,7 @@ def commit_draft(
     request: Request,
 ):
     """将当前 sqlite 草稿文件提交到远端草稿分支 (PRD3 §2.3)。"""
-    from app.core.config import get_settings as _get_settings
-    from app.services import git_service
-
-    settings = _get_settings()
+    settings = get_settings()
     skill = skill_service.get_skill(db, user_id=user.user_id, skill_id=skill_id)
     files = skill_service.list_files(db, user_id=user.user_id, skill_id=skill_id)
     if not files:
@@ -222,9 +217,7 @@ def commit_draft(
     materialized = skill_service.materialize_files_for_publish(files)
 
     # 自动创建 AntCode 仓库
-    from app.services import antcode_client
     if not skill.git_project_id and antcode_client.is_configured(settings):
-        from app.services import antcode_skill_service
         skill = antcode_skill_service.create_or_bind_repository(
             db, user_id=user.user_id, skill_id=skill_id,
         )

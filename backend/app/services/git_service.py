@@ -152,6 +152,28 @@ def _log_warn(msg: str) -> None:
     logging.getLogger("app.git").warning(msg)
 
 
+# ----- 工作区清理 -----
+
+
+def _clean_working_dir(repo_dir: Path) -> None:
+    """清空仓库工作区中除 .git 外的所有文件与目录。"""
+    for child in repo_dir.iterdir():
+        if child.name == ".git":
+            continue
+        if child.is_file():
+            child.unlink()
+        else:
+            shutil.rmtree(child)
+
+
+def _write_files(repo_dir: Path, files: dict[str, bytes]) -> None:
+    """将 path → bytes 映射写入工作区。"""
+    for path, data in files.items():
+        target = repo_dir / path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
+
+
 # ----- 发布 -----
 
 
@@ -198,19 +220,8 @@ def publish_version(
                 except GitCommandError:
                     pass
 
-        # 清理工作区中所有已跟踪文件,然后重新写入(确保删除了的文件也被删)
-        for child in repo_dir.iterdir():
-            if child.name == ".git":
-                continue
-            if child.is_file():
-                child.unlink()
-            else:
-                shutil.rmtree(child)
-
-        for path, data in files.items():
-            target = repo_dir / path
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(data)
+        _clean_working_dir(repo_dir)
+        _write_files(repo_dir, files)
 
         repo.git.add(A=True)
 
@@ -315,20 +326,8 @@ def commit_draft(
             else:
                 repo.git.checkout("-b", branch)
 
-        # 清理并写入文件
-        for child in repo_dir.iterdir():
-            if child.name == ".git":
-                continue
-            if child.is_file():
-                child.unlink()
-            else:
-                import shutil as _shutil
-                _shutil.rmtree(child)
-
-        for path, data in files.items():
-            target = repo_dir / path
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(data)
+        _clean_working_dir(repo_dir)
+        _write_files(repo_dir, files)
 
         repo.git.add(A=True)
 
@@ -412,11 +411,9 @@ def diff_versions(repo_slug: str, sha_a: str, sha_b: str) -> list[FileDiffEntry]
     def _collect(tree, prefix: str = "") -> dict[str, bytes]:
         out: dict[str, bytes] = {}
         for blob in tree.blobs:
-            full = f"{prefix}{blob.name}" if not prefix else f"{prefix}{blob.name}"
-            out[full] = blob.data_stream.read()
+            out[f"{prefix}{blob.name}"] = blob.data_stream.read()
         for sub in tree.trees:
-            sub_prefix = f"{prefix}{sub.name}/"
-            out.update(_collect(sub, sub_prefix))
+            out.update(_collect(sub, f"{prefix}{sub.name}/"))
         return out
 
     a_files = _collect(a_tree)

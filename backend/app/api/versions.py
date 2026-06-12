@@ -49,8 +49,12 @@ def publish(
     db: DBDep,
     request: Request,
 ):
+    from app.services import skill_service
+
     settings = get_settings()
     name, email = _author(user, settings)
+    # 预先加载 skill,publish_version 内部会更新其字段,无需二次查询
+    skill = skill_service.get_skill(db, user_id=user.user_id, skill_id=skill_id)
     record = version_service.publish_version(
         db,
         user_id=user.user_id,
@@ -63,8 +67,6 @@ def publish(
         create_tag=body.create_tag,
     )
     # PRD5 §5.3: 审计 metadata 包含 commit/tag URL
-    from app.services import skill_service as _ss
-    skill = _ss.get_skill(db, user_id=user.user_id, skill_id=skill_id)
     commit_url = ""
     tag_url = ""
     if skill.git_web_url:

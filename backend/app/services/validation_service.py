@@ -90,8 +90,6 @@ def validate_path(path: str) -> str:
             raise ValidationError(
                 f"path 单段超过 {MAX_SEGMENT_LEN}。", code="invalid_path"
             )
-        if CONTROL_CHARS_RE.search(seg):
-            raise ValidationError("path 不允许控制字符。", code="invalid_path")
         cleaned.append(seg)
     if not cleaned:
         raise ValidationError("path 规范化后为空。", code="invalid_path")

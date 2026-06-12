@@ -126,15 +126,27 @@ def import_zip(
 
 
 def _detect_common_dir(paths: list[str]) -> str:
-    """若所有路径都以同一目录为前缀,返回该前缀(含尾部斜杠);否则返回 ''。"""
-    cleaned = [p.replace("\\", "/").lstrip("./") for p in paths]
-    first = cleaned[0]
-    if "/" not in first:
+    """若所有路径都以同一目录(可多层)为前缀,返回该前缀(含尾部斜杠);否则返回 ''。
+
+    例:
+    - ["pkg/SKILL.md", "pkg/scripts/run.sh"] → "pkg/"
+    - ["a/b/SKILL.md", "a/b/scripts/run.sh"] → "a/b/"
+    - ["SKILL.md", "scripts/run.sh"] → ""
+    """
+    if not paths:
         return ""
-    prefix = first.split("/")[0] + "/"
-    if all(p.startswith(prefix) for p in cleaned):
-        return prefix
-    return ""
+    cleaned = [p.replace("\\", "/").lstrip("./") for p in paths]
+    parts_list = [p.split("/") for p in cleaned]
+    # 只比较目录段(最后一段是文件名,不参与公共前缀)
+    common: list[str] = []
+    for segments in zip(*[p[:-1] for p in parts_list]):
+        if len(set(segments)) == 1:
+            common.append(segments[0])
+        else:
+            break
+    if not common:
+        return ""
+    return "/".join(common) + "/"
 
 
 def import_skill_md(

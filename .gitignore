@@ -3,6 +3,7 @@ dist/
 *.tsbuildinfo
 __pycache__/
 *.py[cod]
+.DS_Store
 **/data/skillmng.sqlite3*
 **/data/git/
 .env
